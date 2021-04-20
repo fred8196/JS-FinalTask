@@ -620,7 +620,7 @@ body {
   border-bottom: 1px solid #B9B9B9;
 }
 
-.shoppingCart-table tr:first-child, .shoppingCart-table tr:last-child {
+.shoppingCart-table tr:last-child {
   border-bottom: 0;
 }
 
