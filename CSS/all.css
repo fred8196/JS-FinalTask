@@ -838,3 +838,9 @@ body {
   width: 30px;
 }
 /*# sourceMappingURL=all.css.map */
+
+.allBtnNone{
+  color:gray;
+  cursor:pointer;
+  pointer-events: none;
+}

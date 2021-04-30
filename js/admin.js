@@ -1,13 +1,16 @@
+const configToken = {
+    headers: {
+        authorization: token
+    }
+}
 let orderData = [];
 function getOrderList() {
-    axios.get(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders`, {
-        headers: {
-            'authorization': token
-        }
-    }).then(function (response) {
+    axios.get(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders`, configToken).then(function (response) {
         orderData = response.data.orders;
         renderOrderList();
         renderC3();
+    }).catch(function (error) {
+        console.log(error);
     })
 }
 
@@ -78,13 +81,11 @@ orderDataList.addEventListener("click", function (e) {
 
     //刪除單一訂單
     if (e.target.getAttribute("class").match("deleteOrderBtn")) {
-        axios.delete(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders/${e.target.dataset.id}`, {
-            headers: {
-                'authorization': token
-            }
-        }).then(function (response) {
+        axios.delete(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders/${e.target.dataset.id}`, configToken).then(function (response) {
             alert("訂單刪除成功！");
             getOrderList();
+        }).catch(function (error) {
+            console.log(error);
         })
     }
 })
@@ -92,18 +93,16 @@ orderDataList.addEventListener("click", function (e) {
 //變更訂單狀態function
 function changeOrderStatus(orderId, orderStatus) {
     axios.put(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders`, {
-        "data": {
-            "id": orderId,
-            "paid": orderStatus
+        data: {
+            id: orderId,
+            paid: orderStatus
         }
-    }, {
-        headers: {
-            'authorization': token
-        }
-    }
+    }, configToken
     ).then(function (response) {
         alert("訂單狀態變更成功！")
         getOrderList();
+    }).catch(function (error) {
+        console.log(error);
     })
 }
 
@@ -111,13 +110,15 @@ function changeOrderStatus(orderId, orderStatus) {
 const discardAllBtn = document.querySelector(".discardAllBtn");
 discardAllBtn.addEventListener("click", function (e) {
     e.preventDefault();
-    axios.delete(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders`, {
-        headers: {
-            'authorization': token
-        }
-    }).then(function (response) {
+    if (orderData.length == 0) {
+        alert('目前已無訂單可刪除');
+        return;
+    }
+    axios.delete(`${baseUrl}/api/livejs/v1/admin/${api_path}/orders`, configToken).then(function (response) {
         alert("訂單已全部刪除！")
         getOrderList();
+    }).catch(function (error) {
+        console.log(error);
     })
 })
 
@@ -153,7 +154,7 @@ function renderC3() {
                 otherAmount += newData[index][1];
             }
         })
-        newData.splice(3, newData.length - 1);
+        newData.splice(3);
         newData.push(["其他", otherAmount]);
     }
 
